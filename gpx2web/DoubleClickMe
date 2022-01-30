@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+echo I am in this directory: $SCRIPT_DIR
+
+OGR2OGR_PATH=/Library/Frameworks/GDAL.framework/Versions/3.2/Programs/ogr2ogr
+
+# Check if input folder contains gpx files
+DIR=$SCRIPT_DIR/input
+# If input folder contains gpx files
+if ls ${DIR}/*.gpx &>/dev/null
+then
+    echo "There are gpx files in input folder"
+    # Delete all files in output folder
+    rm -v $SCRIPT_DIR/output/*
+    # Following line shows how to merge gpx files with ogr2ogr
+    # for file in InputDirectory/*.gpx; do ogr2ogr OutputDirectory/gpx.shp -append "${file}" LayerName -fieldTypeToString DateTime; done
+    # Merge gpx files to shp file
+    # for file in $SCRIPT_DIR/input/*.gpx; do $OGR2OGR_PATH $SCRIPT_DIR/output/mergedgpxfiles.shp -append "${file}" tracks -fieldTypeToString DateTime; done
+    # Merge gpx files to geojson file
+    for file in $SCRIPT_DIR/input/*.gpx; do $OGR2OGR_PATH $SCRIPT_DIR/output/mergedgpxfiles.geojson -append "${file}" tracks -fieldTypeToString DateTime; done
+    # Change file extension of geojson file to js
+    for file in $SCRIPT_DIR/output/*.geojson; do mv "$file" "${file%.geojson}.js"; done
+    # Replace first line in js file
+    var="var json_mergedgpxfiles_3 = {"
+    sed -i.bak "1s/.*/$var/" $SCRIPT_DIR/output/mergedgpxfiles.js
+    # Copy mergedgpxfiles.js to qgis2web/layers/
+    cp -R $SCRIPT_DIR/output/mergedgpxfiles.js $SCRIPT_DIR/qgis2web/layers
+    # Open index.html in default browser
+    open $SCRIPT_DIR/qgis2web/index.html
+# If input folder contains no gpx files
+else
+    echo "There are no gpx files in input folder"
+fi
