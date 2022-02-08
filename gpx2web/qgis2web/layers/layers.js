@@ -14,7 +14,7 @@ var wms_layers = [];
         });
 var lyr_Landeskartengrau_1 = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
-                              url: "https://wms.swisstopo.admin.ch/",
+                              url: "https://wms.geo.admin.ch/",
     attributions: ' ',
                               params: {
                                 "LAYERS": "ch.swisstopo.pixelkarte-grau",
@@ -29,7 +29,7 @@ var lyr_Landeskartengrau_1 = new ol.layer.Tile({
               wms_layers.push([lyr_Landeskartengrau_1, 0]);
 var lyr_Wanderwege_2 = new ol.layer.Tile({
                             source: new ol.source.TileWMS(({
-                              url: "https://wms.swisstopo.admin.ch/",
+                              url: "https://wms.geo.admin.ch/",
     attributions: ' ',
                               params: {
                                 "LAYERS": "ch.swisstopo.swisstlm3d-wanderwege",
